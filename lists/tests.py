@@ -19,7 +19,7 @@ class HomePageTest(TestCase):
         response = self.client.post('/', data={'item_text': 'A new list item'})
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
 
     def test_only_saves_items_when_necessary(self):
         self.client.get('/')
@@ -50,3 +50,14 @@ class ItemModelTest(TestCase):
 
         self.assertEqual(saved_items[0].text, 'The first (ever) list item')
         self.assertEqual(saved_items[1].text, 'Item the second')
+
+
+class ListViewText(TestCase):
+    def test_displays_all_items(self):
+        Item.objects.create(text='item 1')
+        Item.objects.create(text='item 2')
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+
+        self.assertIn('item 1', response.content.decode('utf-8'))
+        self.assertIn('item 2', response.content.decode('utf-8'))
