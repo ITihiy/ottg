@@ -126,3 +126,6 @@ dmypy.json
 
 # Idea files
 .idea/
+
+# Ansible
+deploy/
