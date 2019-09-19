@@ -24,6 +24,7 @@ if 'DJANGO_DEBUG_FALSE' in os.environ:
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
     ALLOWED_HOSTS = [os.environ['SITE_NAME']]
     with open('/home/tihiy/smoke.txt', 'w') as f:
+        f.write('not in debug')
         f.write(ALLOWED_HOSTS)
         f.write(SECRET_KEY)
 else:
