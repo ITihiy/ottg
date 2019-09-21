@@ -36,7 +36,8 @@ class ItemModelTest(TestCase):
             item = Item(list=list_, text='bla')
             item.full_clean()
 
-    def test_can_save_same_items_to_different_lists(self):
+    @classmethod
+    def test_can_save_same_items_to_different_lists(cls):
         list1 = List.objects.create()
         list2 = List.objects.create()
         Item.objects.create(text='bla', list=list1)
@@ -50,6 +51,6 @@ class ItemModelTest(TestCase):
         item3 = Item.objects.create(text='item 3', list=list_)
         self.assertEqual(list(Item.objects.all()), [item1, item2, item3])
 
-    def test_string_representaion(self):
+    def test_string_representation(self):
         item = Item(text='some text')
         self.assertEqual(str(item), 'some text')
