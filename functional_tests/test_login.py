@@ -74,6 +74,7 @@ class LoginTest(FunctionalTest):
                     if message.subject == subject:
                         email_id = message
                         return message.body
+                acc.inbox.refresh()
         finally:
             if email_id:
                 email_id.delete()
