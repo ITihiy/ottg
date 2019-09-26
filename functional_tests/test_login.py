@@ -3,12 +3,14 @@ from selenium.webdriver.common.keys import Keys
 import re
 import os
 import time
+import urllib3
 from exchangelib import Credentials, Account, DELEGATE, Configuration
 from exchangelib.protocol import BaseProtocol, NoVerifyHTTPAdapter
 
 from .base import FunctionalTest
 
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 BaseProtocol.HTTP_ADAPTER_CLS = NoVerifyHTTPAdapter
 SUBJECT = 'Your login link for Superlists'
 
