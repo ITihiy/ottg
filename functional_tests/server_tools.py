@@ -1,16 +1,26 @@
-import sys
-from django.core.management import call_command
-from io import StringIO
+from fabric.api import run
+from fabric.context_managers import settings, shell_env
 
 
-def reset_database():
-    call_command('flush', '--noinput')
+def _get_manage_dot_py(host):
+    return f'~/sites/{host}/venv/bin/python ~/sites/{host}/manage.py'
 
 
-def create_session_on_server(email):
-    print('create_session_on_server', file=sys.stderr)
-    out = StringIO()
-    call_command('create_session', email, stdout=out)
-    key = out.getvalue().strip()
-    print('key:', key, file=sys.stderr)
-    return key
+def reset_database(host):
+    manage_dot_py = _get_manage_dot_py(host)
+    with settings(host_string=f'tihiy@{host}'):
+        run(f'{manage_dot_py} flush --noinput')
+
+
+def _get_server_env_vars(host):
+    env_lines = run(f'cat ~/sites/{host}/.env').splitlines()
+    return dict(l.split('=') for l in env_lines if l)
+
+
+def create_session_on_server(host, email):
+    manage_dot_py = _get_manage_dot_py(host)
+    with settings(host_string=f'tihiy@{host}'):
+        env_vars = _get_server_env_vars(host)
+        with shell_env(**env_vars):
+            session_key = run(f'{manage_dot_py} create_session {email}')
+            return session_key.strip()

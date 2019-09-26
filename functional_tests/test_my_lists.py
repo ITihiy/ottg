@@ -10,7 +10,7 @@ User = get_user_model()
 
 class MyListsTest(FunctionalTest):
     def create_pre_authenticated_session(self, email):
-        session_key = create_session_on_server(email) if self.staging_server \
+        session_key = create_session_on_server(self.live_server_url, email) if self.staging_server \
             else create_pre_authenticated_session(email)
         self.browser.get(self.live_server_url + '/404_no_such_url/')
         self.browser.add_cookie(dict(
