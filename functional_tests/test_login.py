@@ -32,7 +32,7 @@ class LoginTest(FunctionalTest):
             self.browser.find_element_by_tag_name('body').text
         ))
 
-        # She checksher email and finds a message
+        # She checks her email and finds a message
         body = self.wait_for_email(test_email, SUBJECT)
 
         # It has a url link in it
