@@ -129,3 +129,6 @@ dmypy.json
 
 # Ansible
 deploy/
+
+# Screen dumps
+functional_tests/screendumps

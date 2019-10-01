@@ -5,10 +5,12 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
+from datetime import datetime
 
 from .server_tools import reset_database
 
 MAX_WAIT = 10
+SCREEN_DUMP_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'screendumps')
 
 
 def wait(fn):
@@ -33,7 +35,34 @@ class FunctionalTest(StaticLiveServerTestCase):
             reset_database(self.staging_server)
 
     def tearDown(self) -> None:
+        if self._test_has_failed():
+            if not os.path.exists(SCREEN_DUMP_LOCATION):
+                os.makedirs(SCREEN_DUMP_LOCATION)
+            for ix, handle in enumerate(self.browser.window_handles):
+                self._windowid = ix
+                self.browser.switch_to_window(handle)
+                self.take_screenshot()
+                self.dump_html()
         self.browser.quit()
+        super().tearDown()
+
+    def take_screenshot(self):
+        file_name = self._get_file_name() + '.png'
+        print('screenshoting to', file_name)
+        self.browser.get_screenshot_as_file(file_name)
+
+    def dump_html(self):
+        file_name = self._get_file_name() + '.html'
+        print('dumping HTML to', file_name)
+        with open(file_name, 'w') as f:
+            f.write(self.browser.page_source)
+
+    def _test_has_failed(self):
+        return any(error for (method, error) in self._outcome.errors)
+
+    def _get_file_name(self):
+        timestamp = datetime.now().isoformat().replace(':', '.')[:19]
+        return f'{SCREEN_DUMP_LOCATION}/{self.__class__.__name__}.{self._testMethodName}-window{self._windowid}-{timestamp}'
 
     @wait
     def wait_for_row_in_list_table(self, row_text):
