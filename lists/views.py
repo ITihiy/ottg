@@ -32,3 +32,11 @@ def new_list(request):
 def my_lists(request, owner):
     user = User.objects.get(email=owner)
     return render(request, 'lists/my_lists.html', {'owner': user})
+
+
+def share(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    try:
+        list_.shared_with.add(User.objects.get(email=request.POST['sharee']))
+    finally:
+        return redirect(list_)

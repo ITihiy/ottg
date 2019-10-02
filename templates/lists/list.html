@@ -5,9 +5,32 @@
 {% block form_action %}{% url 'lists:view_list' list.id %}{% endblock %}
 
 {% block table %}
+    <label for="id_list_owner">List owner: </label>
+    <span class="media-heading" id="id_list_owner">{{ list.owner.email }}</span>
     <table id="id_list_table" class="table">
      {% for item in list.item_set.all %}
         <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
      {% endfor %}
     </table>
+{% endblock %}
+
+{% block extra_content %}
+    <div class="row">
+        <div class="col-md-6">
+            <h3>List shared with:</h3>
+            <ul class="list-sharee">
+                {% for shared in list.shared_with.all %}
+                    <li>{{ shared.email }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <form  method="post" action="{% url 'lists:share' list.id %}">
+                {% csrf_token %}
+                <h3>Share list with</h3>
+                <input class="form-control" placeholder="your-friend@example.com" type="text" name="sharee">
+            </form>
+        </div>
+    </div>
 {% endblock %}
