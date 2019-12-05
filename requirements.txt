@@ -6,7 +6,7 @@ cffi==1.12.3
 chardet==3.0.4
 cryptography==2.7
 defusedxml==0.6.0
-Django==2.2.5
+Django==2.2.8
 dnspython==1.16.0
 exchangelib==2.0.1
 Fabric3==1.14.post1
